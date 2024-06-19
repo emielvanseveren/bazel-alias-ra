@@ -1,0 +1,37 @@
+workspace(name="my_workspace")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+
+maybe(
+    http_archive,
+    name = "rules_rust",
+    sha256 = "a6df4c22bb3fb43573a4c4088ef6d0fafe38a0ecd0f85ad21ffd888800337030",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.44.0/rules_rust-v0.44.0.tar.gz"],
+)
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+rules_rust_dependencies()
+
+rust_register_toolchains(
+    edition = "2021",
+    versions = ["1.76.0"]
+)
+
+load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
+crate_universe_dependencies(bootstrap = True)
+load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository")
+
+load("@rules_rust//tools/rust_analyzer:deps.bzl", "rust_analyzer_dependencies")
+rust_analyzer_dependencies()
+
+crates_repository(
+    name = "crate_index",
+    cargo_lockfile = "//:Cargo.lock",
+    lockfile = "//:Cargo_bazel.lock",
+    packages = { 
+        "tokio" : crate.spec(version="1.0", features=["full"]),
+        "custom": crate.spec(package="rand",version="0.8"),
+    },
+)
+load("@crate_index//:defs.bzl", crate_repositories="crate_repositories")
+crate_repositories()

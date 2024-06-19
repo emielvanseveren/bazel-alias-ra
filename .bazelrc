@@ -1,0 +1,2 @@
+common --enable_bzlmod=false
+build --keep_going=false

@@ -1,0 +1,5 @@
+bazel-bin
+bazel-out
+bazel-slint-bazel-template
+bazel-testlogs
+target
