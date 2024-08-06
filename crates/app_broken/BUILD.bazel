@@ -1,4 +1,4 @@
-load("@rules_rust//rust:defs.bzl", "rust_binary")
+load("@rules_rust//rust:defs.bzl", "rust_binary","rust_test")
 load("@rules_rust//cargo:defs.bzl", "cargo_build_script")
 
 aliases = {
@@ -15,5 +15,13 @@ rust_binary(
     "@crates//:gstreamer-app",
   ],
   visibility = ["//visibility:public"],
+)
+
+rust_test(
+  name = "test_app",
+  crate = ":app",
+  timeout = "short",
+  aliases = aliases,
+  deps = [],
 )
 
